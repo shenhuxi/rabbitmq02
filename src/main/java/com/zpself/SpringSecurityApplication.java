@@ -23,9 +23,14 @@ public class SpringSecurityApplication {
     public String hello(){
         return "hello萨达萨达撒  ";
     }*/
-   @GetMapping("/hello")
-   public String hello(String contans){
-       msgProducer.sendMsg(contans);
-       return "hello萨达萨达撒  ";
-   }
+   @GetMapping("/sendMsgA")
+    public String sendMsgA(String contans){
+        msgProducer.sendMsgA(contans);
+        return "sendMsgA调用成功！  ";
+    }
+    @GetMapping("/sendMsgB")
+    public String sendMsgB(String contans){
+        msgProducer.sendMsgB(contans);
+        return "sendMsgB调用成功！  ";
+    }
 }
