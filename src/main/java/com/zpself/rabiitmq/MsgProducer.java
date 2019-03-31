@@ -1,5 +1,7 @@
 package com.zpself.rabiitmq;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zpself.util.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -28,10 +30,15 @@ public class MsgProducer implements RabbitTemplate.ConfirmCallback {
         rabbitTemplate.setConfirmCallback(this); //rabbitTemplate如果为单例的话，那回调就是最后设置的内容
     }
 
-    public void sendMsgA(String content) {
+    public void sendMsgA(String content,String acount) {
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
+        JSONObject object = new JSONObject();
+        object.put("acount", acount);
+        object.put("content", content);
+        object.put("password", UUID.randomUUID());
+        String strJson =object.toJSONString();
         //把消息放入ROUTINGKEY_A对应的队列当中去，对应的是队列A
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_A, RabbitConfig.ROUTINGKEY_A, content, correlationId);
+        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_A, RabbitConfig.ROUTINGKEY_A, strJson, correlationId);
     }
     public void sendMsgB(String content) {
         CorrelationData correlationId = new CorrelationData(UUID.randomUUID().toString());
