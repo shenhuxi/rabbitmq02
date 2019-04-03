@@ -19,11 +19,7 @@ public class SpringSecurityApplication {
     public static void main(String[] args) {
         SpringApplication.run(SpringSecurityApplication.class, args);
     }
-   /* @GetMapping("/hello")
-    public String hello(){
-        return "hello萨达萨达撒  ";
-    }*/
-   @GetMapping("/sendMsgA")
+    @GetMapping("/sendMsgA")
     public String sendMsgA(String contans,String acount){
         msgProducer.sendMsgA(contans, acount);
         return "sendMsgA调用成功！  ";
@@ -31,6 +27,11 @@ public class SpringSecurityApplication {
     @GetMapping("/sendMsgB")
     public String sendMsgB(String contans){
         msgProducer.sendMsgB(contans);
+        return "sendMsgB调用成功！  ";
+    }
+    @GetMapping("/RadioBroadcast")//Fanout 就是我们熟悉的广播模式，给Fanout交换机发送消息，绑定了这个交换机的所有队列都收到这个消息。
+    public String RadioBroadcast(String contans){
+        msgProducer.RadioBroadcast(contans);
         return "sendMsgB调用成功！  ";
     }
 }

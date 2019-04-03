@@ -45,6 +45,9 @@ public class MsgProducer implements RabbitTemplate.ConfirmCallback {
         //把消息放入ROUTINGKEY_A对应的队列当中去，对应的是队列A
         rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_B, RabbitConfig.ROUTINGKEY_B, content, correlationId);
     }
+    public void RadioBroadcast(String content) {
+        rabbitTemplate.convertAndSend("my-mq-fanout_exchange","", content);
+    }
     /**
      * 回调
      */

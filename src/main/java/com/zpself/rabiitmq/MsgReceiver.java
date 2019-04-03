@@ -19,15 +19,25 @@ public class MsgReceiver {
 
 
     @RabbitListener(queues = RabbitConfig.QUEUE_A)
-    public void process(Message message){
-       // logger.info("接收处理队列B当中的消息： " +new String (message.getBody()));
+    public void process_A_One(Message message){
+       byte[] body = message.getBody();
+        JSONObject jsonObject = JSONUtils.toJSONObject(new String(body));
+        logger.info("消费A【one】:接收处理队列A当中的消息： "+"\n"+ "acount:"+jsonObject.getString("acount")+"\n"+ "content:"+jsonObject.getString("content")+"\n"+ "你的随机密码是:"+jsonObject.getString("password"));
+    }
+    @RabbitListener(queues = RabbitConfig.QUEUE_A)
+    public void process_A_Two(Message message){
       byte[] body = message.getBody();
         JSONObject jsonObject = JSONUtils.toJSONObject(new String(body));
-        logger.info("接收处理队列A当中的消息： "+"\n"+ "acount:"+jsonObject.getString("acount")+"\n"+ "content:"+jsonObject.getString("content")+"\n"+ "你的随机密码是:"+jsonObject.getString("password"));
+        logger.info("消费A【one】:接收处理队列A当中的消息： "+"\n"+ "acount:"+jsonObject.getString("acount")+"\n"+ "content:"+jsonObject.getString("content")+"\n"+ "你的随机密码是:"+jsonObject.getString("password"));
     }
+
     @RabbitListener(queues = RabbitConfig.QUEUE_B)
     public void processB(Message message) {
         logger.info("接收处理队列B当中的消息： " +new String (message.getBody()));
     }
 
+    @RabbitListener(queues = RabbitConfig.QUEUE_C)
+    public void processC(Message message) {
+        logger.info("接收处理队列C当中的消息： " +new String (message.getBody()));
+    }
 }

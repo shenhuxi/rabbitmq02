@@ -2,10 +2,7 @@ package com.zpself.rabiitmq;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -23,6 +20,7 @@ import org.springframework.context.annotation.Scope;
  */
 @Configuration
 public class RabbitConfig {
+
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -42,7 +40,7 @@ public class RabbitConfig {
     public static final String EXCHANGE_A = "my-mq-exchange_A";
     public static final String EXCHANGE_B = "my-mq-exchange_B";
     public static final String EXCHANGE_C = "my-mq-exchange_C";
-
+    private static final String FANOUT_EXCHANGE ="my-mq-fanout_exchange" ;
 
     public static final String QUEUE_A = "QUEUE_A";
     public static final String QUEUE_B = "QUEUE_B";
@@ -111,6 +109,14 @@ public class RabbitConfig {
     public Queue queueB() {
         return new Queue(QUEUE_B, true); //队列持久
     }
+    /**
+     * 获取队列C
+     * @return
+     */
+    @Bean
+    public Queue queueC() {
+        return new Queue(QUEUE_C, true); //队列持久
+    }
 
     @Bean
     public Binding binding() {
@@ -118,8 +124,29 @@ public class RabbitConfig {
     }
     @Bean
     public Binding bindingB(){
-        return BindingBuilder.bind(queueB()).to(defaultExchange()).with(RabbitConfig.ROUTINGKEY_B);
+        return BindingBuilder.bind(queueB()).to(defaultExchangeB()).with(RabbitConfig.ROUTINGKEY_B);
     }
 
+    //-----------------------配置广播：
+    // Fanout 就是我们熟悉的广播模式，给Fanout交换机发送消息，绑定了这个交换机的所有队列都收到这个消息。
+    //配置fanout_exchange
+    @Bean
+    FanoutExchange fanoutExchange() {
+        return new FanoutExchange(RabbitConfig.FANOUT_EXCHANGE);
+    }
+
+    //把所有的队列都绑定到这个交换机上去
+   /* @Bean
+    Binding bindingExchangeA(Queue queueA,FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(queueA).to(fanoutExchange);
+    }*/
+    @Bean
+    Binding bindingExchangeB(Queue queueB, FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(queueB).to(fanoutExchange);
+    }
+    @Bean
+    Binding bindingExchangeC(Queue queueC, FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(queueC).to(fanoutExchange);
+    }
 
 }
